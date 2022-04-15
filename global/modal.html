@@ -4,7 +4,42 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="../global/modal.js"></script>
     <title>Modal</title>
   </head>
-  <body></body>
+  <style>
+    .modal-container{
+      border: 2px solid black;
+      display: none;
+      padding: 20px
+      
+      
+    }
+    div.show{
+     display: block
+
+    }
+
+  </style>
+  <body>
+<div  class="modal-container show">
+  <div class="modal-content">
+    <div class="header">
+      <span>Error messages</span> <button class="close">&#x2717</button>
+    </div>
+    <div class="body">
+      <ul>
+        
+      </ul>
+  </div>
+</div>
+<script>
+ let testModal = modal(document.getElementsByClassName("modal-container")[0])
+
+</script>
+
+
+
+
+  </body>
 </html>
