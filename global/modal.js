@@ -18,7 +18,11 @@ const modal = function (element) {
   let backgroundClose = (function (e) {
     let back = document.querySelector("div.modal-container");
     back.addEventListener("click", function (e) {
-      close();
+      let target = e.target;
+
+      if (Object.values(target.classList).includes("modal-container")) {
+        close();
+      }
     });
   })();
 

@@ -24,15 +24,15 @@ const validator = {
       }
       return true;
     },
-    match: function (value1, value2, message = value1 + "must be the same like " + value2) {
-      if (value1.value !== value2.value) {
+    match: function (value1, value2, message = "Inputs must be same!") {
+      if (value1 !== value2) {
         validator.errors.push(message);
         return false;
       }
       return true;
     },
     includes: function (value, request, message) {
-      if (!value.value.includes(request)) {
+      if (!value.match(request)) {
         validator.errors.push(message);
         return false;
       }
@@ -52,23 +52,19 @@ const validator = {
       validator.rules.includes(password, /\d/, "Password must have number!");
       validator.rules.minLenght(password, 4, "Password must have min 4 caracters!");
       validator.rules.maxLenght(password, 8, "Password must have max 8 caracters!");
-      if (currentPassword.value != "") {
-        validator.rules.match(password, currentPassword);
-        return false;
+      if (currentPassword !== undefined) {
+        validator.rules.match(password, currentPassword, "Password must be the same!");
       }
-      return true;
     },
 
     name: function (value) {
       validator.rules.minLenght(value);
       validator.rules.maxLenght(value, 15, "Name must have max 15 caracters!");
-      return true;
     },
 
     phone: function (value) {
       validator.rules.includes(value, /^(\+)+[\d]{1,14}$/, "Phone number must be in format: +...!");
       validator.rules.maxLenght(value, 15, "Phone must have max 15 caracters!");
-      return true;
     },
   },
 };
