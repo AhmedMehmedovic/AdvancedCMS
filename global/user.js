@@ -17,6 +17,7 @@ const user = {
       this[key] = value;
     }
   },
+
   register: function () {
     let requiredList = ["email", "password"];
     requiredList.forEach((prop) => {
@@ -28,7 +29,8 @@ const user = {
     validator.inputs.password(this.password);
     validator.inputs.email(this.email);
     if (validator.errors.length > 0) {
-      this.errors = [this.errors, ...validator.errors];
+      this.errors = [...validator.errors];
+
       return false;
     }
 
@@ -40,6 +42,7 @@ const user = {
     this.update();
     return true;
   },
+
   update: function () {
     let storageKey = this.email ?? undefined;
     if (storageKey === undefined) {

@@ -1,0 +1,52 @@
+div.container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 99%;
+  height: 99%;
+
+  background: linear-gradient(22deg, rgb(221 200 200) 0 50%, #c1c1e8 50% 100%);
+}
+
+div.container div.header {
+  padding-top: 35px;
+  display: block;
+}
+div.container div.header h1 {
+  text-align: center;
+  font-size: xxx-large;
+  margin: 0;
+}
+div.container div.header p {
+  text-align: center;
+  font-size: x-large;
+  margin: 6px;
+}
+div.container div.body {
+  display: block;
+
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  flex-wrap: wrap;
+}
+div.container div.body form {
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+  padding: 62px;
+}
+div.container div.footer {
+  display: block;
+  padding: 20px;
+  text-align: center;
+}
+div.container div.body form input {
+  height: 40px;
+  margin: 3px 0px;
+  text-indent: 10px;
+}
+div.container div.body form input[type="button"] {
+  margin: 7px 60px;
+  background-color: cadetblue;
+}
