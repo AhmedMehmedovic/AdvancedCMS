@@ -75,11 +75,21 @@ const tables = function (element, columns) {
       let div = document.createElement("div");
       let saveButton = document.createElement("button");
       saveButton.innerText = "Save";
+      saveButton.addEventListener("click", function (e) {
+        let inputs = newRow.querySelectorAll("input");
+        inputs.forEach((input) => {
+          console.log(input.value);
+        });
+      });
       let cancelButton = document.createElement("button");
       cancelButton.innerText = "Cancel";
+      cancelButton.addEventListener("click", (e) => {
+        newRow.remove();
+        button.disabled = false;
+      });
       div.appendChild(saveButton);
       div.appendChild(cancelButton);
-      row(thead, inputs(div));
+      let newRow = row(thead, inputs(div));
     });
     return button;
   };
