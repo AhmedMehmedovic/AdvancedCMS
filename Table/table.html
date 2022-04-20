@@ -5,14 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../Table/table.css" />
-    <script src="../Table/table.js"></script>
+
+    <script src="../Table/tables.js"></script>
+
     <title>Table</title>
   </head>
   <body>
     <div id="container" class="container">
-      <button id="btn" onclick="klik()"></button>
+      <table id="tabela1"></table>
+      <table id="tabela2"></table>
     </div>
 
-    <script></script>
+    <script>
+      let tabela1 = tables(document.getElementById("tabela1"), ["ID", "First Name", "Last Name", "Notes"]);
+      let tabela2 = tables(document.getElementById("tabela2"), ["ID", "First Name 2", "Last Name 2", "Notes 2"]);
+    </script>
   </body>
 </html>
