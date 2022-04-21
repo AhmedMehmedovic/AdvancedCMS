@@ -12,3 +12,14 @@ table {
 div.table-wraper {
   padding: 20px;
 }
+
+div.table-wraper table thead tr th:nth-child(1) {
+  width: 125px;
+  display: inline-block;
+}
+
+div.table-wraper table thead tr th:nth-child(1) div,
+div.table-wraper table tbody tr td:nth-child(1) div {
+  display: flex;
+  justify-content: space-around;
+}

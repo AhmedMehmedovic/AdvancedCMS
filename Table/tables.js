@@ -4,6 +4,8 @@
  * @returns
  */
 
+//const { userInfo } = require("os");
+
 const tables = function (element, columns) {
   columns = ["Action", ...columns];
   /**
@@ -71,24 +73,96 @@ const tables = function (element, columns) {
     let button = document.createElement("button");
     button.innerText = "Add +";
     button.addEventListener("click", function (e) {
+      // After click add button disable button and searchinput
       button.disabled = true;
+      let searchRowEditable = element.querySelectorAll("div.table-wraper table thead tr:nth-child(2) th:not(:first-child) input");
+
+      for (let index = 0; index < searchRowEditable.length; index++) {
+        const element = searchRowEditable[index];
+        element.disabled = true;
+      }
+
+      // Create div for buttons
       let div = document.createElement("div");
+
+      // Save button in action
       let saveButton = document.createElement("button");
       saveButton.innerText = "Save";
+
       saveButton.addEventListener("click", function (e) {
-        let inputs = newRow.querySelectorAll("input");
-        inputs.forEach((input) => {
-          console.log(input.value);
+        // Taking all elements from newrow
+        let inputColumn = newRow.querySelectorAll("input");
+        let newInputs = [];
+        inputColumn.forEach((input) => {
+          newInputs.push(input.value);
         });
+
+        let div = document.createElement("div");
+
+        ///Delete button
+
+        let deleteButton = document.createElement("button");
+        deleteButton.innerText = "Delete";
+        deleteButton.addEventListener("click", (e) => {
+          newRowData.remove();
+        });
+
+        ///Edit button
+
+        let editButton = document.createElement("button");
+        editButton.innerText = "Edit";
+        editButton.addEventListener("click", (e) => {
+          let tds = newRowData.querySelectorAll("td:not(:first-child)");
+
+          for (let index = 0; index < tds.length; index++) {
+            const element = tds[index];
+
+            let editInput = document.createElement("input");
+            editInput.value = element.innerText;
+
+            element.innerHTML = "";
+            element.appendChild(editInput);
+          }
+
+          let updateButton = document.createElement("button");
+          updateButton.innerText = "Update";
+          updateButton.addEventListener("click", function (e) {
+            let tdsUpdate = newRowData.querySelectorAll("td:not(:first-child)");
+
+            for (let index = 0; index < tdsUpdate.length; index++) {
+              const element = tdsUpdate[index];
+              const input = element.querySelector("input");
+              element.innerHTML = input.value;
+            }
+            updateButton.replaceWith(editButton);
+          });
+          editButton.replaceWith(updateButton);
+        });
+
+        div.appendChild(editButton);
+
+        div.appendChild(deleteButton);
+
+        let newRowData = row(tbody, [div, ...newInputs]);
+
+        newRow.remove();
+        button.disabled = false;
       });
+
+      // Cancel button in action
+
       let cancelButton = document.createElement("button");
       cancelButton.innerText = "Cancel";
       cancelButton.addEventListener("click", (e) => {
         newRow.remove();
         button.disabled = false;
       });
+
+      // Action buttons
       div.appendChild(saveButton);
       div.appendChild(cancelButton);
+
+      // New row create with action buttons
       let newRow = row(thead, inputs(div));
     });
     return button;
@@ -96,12 +170,13 @@ const tables = function (element, columns) {
 
   const formaInputsUnsearch = (function () {
     let searhInputs = inputs(addNew());
+    // console.log(searhInputs);
     row(thead, searhInputs);
     for (let index = 1; index < searhInputs.length; index++) {
       const input = searhInputs[index];
       input.placeholder = "Search: " + input.placeholder;
       input.addEventListener("keyup", function (e) {
-        console.log(e.target.value);
+        //console.log(e.target.value);
       });
     }
   })();
