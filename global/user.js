@@ -1,6 +1,12 @@
 "use strict";
 const user = {
   errors: [],
+  modal: document.getElementsByClassName("modal-container")[0],
+  getErrors: function (restart = true) {
+    let tempErrors = [this.errors, ...validator.getErrors(restart)];
+    if (restart) this.errors = [];
+    return tempErrors;
+  },
 
   init: function (email, password) {
     storage.init(email);
@@ -29,15 +35,14 @@ const user = {
     validator.inputs.password(this.password);
     validator.inputs.email(this.email);
     if (validator.errors.length > 0) {
-      this.errors = [...validator.errors];
-
+      console.log(this.getErrors(false));
       return false;
     }
 
     let userExist = storage.init(this.email);
 
     if (userExist) {
-      throw Error("User is registred");
+      throw Error("User is registered");
     }
     this.update();
     return true;

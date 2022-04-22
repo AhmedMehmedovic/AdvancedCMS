@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../Registration/registration.css">
     <script src="../global/login.js"></script>
     <title>HomePage</title>
   </head>
@@ -14,16 +15,33 @@
         <p>Please sign in or sign up for using CMS</p>
       </div>
       <div class="body">
-        <div>
+        
+          <form action="userInput">
           <input type="email" placeholder="Email" />
           <input type="password" placeholder="Password" />
-        </div>
-        <div>
-          <a type="signIn">Sign in</a><span> or </span>
-          <a href="../Registration/index.html">Registration</a>
-        </div>
+
+          
+            <input type="button" value="Sign In"><span> or click on </span>
+            <a href="../Registration/index.html">Registration</a>
+          
+        </form>
+      </div>
+        
+        
       </div>
       <div class="footer"></div>
     </div>
+    <div  class="modal-container ">
+      <div class="modal-content">
+        <div class="header">
+          <span>Error messages</span> <button class="close">&#x2717</button>
+        </div>
+        <div class="body">
+          <ul>
+            
+          </ul>
+      </div>
+    </div>
+  </div>
   </body>
 </html>

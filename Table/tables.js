@@ -69,6 +69,19 @@ const tables = function (element, columns) {
     return row;
   };
 
+  // Editable search input when adding new
+  const editable = function (element, value) {
+    let inputFields = element;
+    for (let index = 0; index < inputFields.length; index++) {
+      const element = inputFields[index];
+      if (value === "OFF") {
+        element.disabled = true;
+      } else {
+        element.disabled = false;
+      }
+    }
+  };
+
   const addNew = function () {
     let button = document.createElement("button");
     button.innerText = "Add +";
@@ -76,11 +89,7 @@ const tables = function (element, columns) {
       // After click add button disable button and searchinput
       button.disabled = true;
       let searchRowEditable = element.querySelectorAll("div.table-wraper table thead tr:nth-child(2) th:not(:first-child) input");
-
-      for (let index = 0; index < searchRowEditable.length; index++) {
-        const element = searchRowEditable[index];
-        element.disabled = true;
-      }
+      editable(searchRowEditable, "OFF");
 
       // Create div for buttons
       let div = document.createElement("div");
@@ -135,8 +144,11 @@ const tables = function (element, columns) {
               element.innerHTML = input.value;
             }
             updateButton.replaceWith(editButton);
+            button.disabled = false;
           });
           editButton.replaceWith(updateButton);
+
+          button.disabled = true;
         });
 
         div.appendChild(editButton);
@@ -145,8 +157,14 @@ const tables = function (element, columns) {
 
         let newRowData = row(tbody, [div, ...newInputs]);
 
+        console.log(newRowData);
+
+        //rowsTable.reverse();
+        // console.log(rowsTable);
+
         newRow.remove();
         button.disabled = false;
+        editable(searchRowEditable);
       });
 
       // Cancel button in action
@@ -156,6 +174,7 @@ const tables = function (element, columns) {
       cancelButton.addEventListener("click", (e) => {
         newRow.remove();
         button.disabled = false;
+        editable(searchRowEditable);
       });
 
       // Action buttons

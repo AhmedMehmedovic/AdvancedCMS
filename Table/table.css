@@ -7,19 +7,74 @@ td {
   border: 1px solid black;
 }
 table {
-  width: 30%;
+  width: 99%;
 }
 div.table-wraper {
   padding: 20px;
+  width: 83%;
+  height: 81%;
+}
+div.table-wraper table tbody {
+  height: auto !important;
+  /*overflow: auto;*/
 }
 
 div.table-wraper table thead tr th:nth-child(1) {
-  width: 125px;
   display: inline-block;
+  width: 100%;
 }
 
 div.table-wraper table thead tr th:nth-child(1) div,
 div.table-wraper table tbody tr td:nth-child(1) div {
   display: flex;
   justify-content: space-around;
+}
+div.table-wraper table tbody tr td:not(:first-child) input {
+  width: 97%;
+  overflow: hidden;
+}
+div.table-wraper table td {
+  height: 40px;
+}
+div.container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  overflow: auto;
+
+  width: 99%;
+  height: 99%;
+
+  background: linear-gradient(22deg, rgb(221 200 200) 0 50%, #c1c1e8 50% 100%);
+}
+
+div.container div.header {
+  padding-top: 35px;
+  display: block;
+}
+div.container div.header h1 {
+  text-align: center;
+  font-size: xxx-large;
+  margin: 0;
+}
+div.container div.header p {
+  text-align: center;
+  font-size: x-large;
+  margin: 6px;
+}
+div.container div.body {
+  height: 75%;
+
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  flex-wrap: wrap;
+}
+div.container div.footer a {
+  text-decoration: blink;
+}
+div.container div.footer {
+  display: flex;
+  justify-content: center;
 }
