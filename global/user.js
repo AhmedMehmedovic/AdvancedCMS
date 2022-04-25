@@ -1,7 +1,9 @@
 "use strict";
 const user = {
   errors: [],
+  data: {},
   modal: document.getElementsByClassName("modal-container")[0],
+
   getErrors: function (restart = true) {
     let tempErrors = [this.errors, ...validator.getErrors(restart)];
     if (restart) this.errors = [];
@@ -35,7 +37,8 @@ const user = {
     validator.inputs.password(this.password);
     validator.inputs.email(this.email);
     if (validator.errors.length > 0) {
-      console.log(this.getErrors(false));
+      modal(document.getElementsByClassName("modal-container")[0]).add(this.getErrors());
+      modal(document.getElementsByClassName("modal-container")[0]).show();
       return false;
     }
 
@@ -45,6 +48,7 @@ const user = {
       throw Error("User is registered");
     }
     this.update();
+    location.reload();
     return true;
   },
 
@@ -61,5 +65,21 @@ const user = {
       if (key !== "errors") storage.data.user[key] = value;
     }
     storage.save();
+    cookie.setItem("session", this.email);
+  },
+
+  isLogged: function () {
+    let session = cookie.getItem("session");
+    if (session !== false) {
+      this.storageKey = session;
+      this.data = localStorage.getItem(this.storageKey);
+
+      if (this.data == null) {
+        return false;
+      }
+      this.data = JSON.parse(this.data);
+      return true;
+    }
+    return false;
   },
 };

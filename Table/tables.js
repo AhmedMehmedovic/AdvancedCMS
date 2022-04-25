@@ -1,6 +1,8 @@
+/*
 user.init("amel@amell.ba", "123l");
 user.testnaVarijabla = true;
 user.update();
+*/
 /**
  *
  * @param {HTMLElement} element

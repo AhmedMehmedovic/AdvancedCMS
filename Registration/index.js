@@ -31,5 +31,8 @@ const registerPage = (function () {
 })();
 
 document.addEventListener("DOMContentLoaded", function (e) {
+  if (user.isLogged()) {
+    location.href = "/Table/table.html";
+  }
   registerPage.init();
 });
