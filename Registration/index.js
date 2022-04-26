@@ -6,6 +6,16 @@ const registerPage = (function () {
       e.preventDefault();
       user.email = inputs.email.value;
       user.password = inputs.password.value;
+
+      if (user.register()) {
+        let registerModal = modal(document.querySelector("div.modal-container"));
+        registerModal.add(user.getErrors());
+        //user.errors = [];
+        registerModal.show();
+
+        return false;
+      }
+
       if (!user.register()) {
         let registerModal = modal(document.querySelector("div.modal-container"));
         registerModal.add(user.getErrors());

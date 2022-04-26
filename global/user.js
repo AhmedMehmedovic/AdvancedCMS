@@ -45,7 +45,11 @@ const user = {
     let userExist = storage.init(this.email);
 
     if (userExist) {
-      throw Error("User is registered");
+      //this.update();
+      user.errors.push("User is registered!");
+
+      return false;
+      //throw Error("User is registered");
     }
     this.update();
     location.reload();
@@ -55,7 +59,8 @@ const user = {
   update: function () {
     let storageKey = this.email ?? undefined;
     if (storageKey === undefined) {
-      throw Error("User is not exist");
+      //throw Error("User is not exist");
+      user.errors.push("User is not exist!");
     }
     storage.init(storageKey);
     if (typeof storage.data.user === "undefined") {

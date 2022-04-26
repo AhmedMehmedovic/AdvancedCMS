@@ -204,4 +204,14 @@ const tables = function (element, columns) {
       });
     }
   })();
+
+  const logOut = (function (e) {
+    let logOutBtn = document.querySelector("div.container div.header button");
+    logOutBtn.addEventListener("click", function (e) {
+      alert("test");
+      cookie.removeItem("session");
+      location.href = "/HomePage/index.html";
+    });
+    console.log(logOutBtn);
+  })();
 };

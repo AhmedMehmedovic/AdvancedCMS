@@ -24,7 +24,12 @@ document.addEventListener("DOMContentLoaded", function (e) {
         let password = login.inputs.password.value;
         user.email = email;
         user.password = password;
-        user.register();
+        user.update();
+        let registerModal = modal(document.querySelector("div.modal-container"));
+        registerModal.add(user.getErrors());
+
+        registerModal.show();
+        //user.register();
       });
     },
   };
