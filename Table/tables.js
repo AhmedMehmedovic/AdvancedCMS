@@ -200,7 +200,7 @@ const tables = function (element, columns) {
       const input = searhInputs[index];
       input.placeholder = "Search: " + input.placeholder;
       input.addEventListener("keyup", function (e) {
-        //console.log(e.target.value);
+        console.log(e.target.value);
       });
     }
   })();
@@ -208,10 +208,22 @@ const tables = function (element, columns) {
   const logOut = (function (e) {
     let logOutBtn = document.querySelector("div.container div.header button");
     logOutBtn.addEventListener("click", function (e) {
-      alert("test");
-      cookie.removeItem("session");
-      location.href = "/HomePage/index.html";
+      if (confirm("Do you want log out?")) {
+        cookie.removeItem("session");
+        // location.href = "/HomePage/index.html";
+        location.reload();
+      } else {
+        return false;
+      }
     });
-    console.log(logOutBtn);
+  })();
+  const returnHome = (function () {
+    let returnBtn = document.querySelector("div.container div.footer a");
+
+    returnBtn.addEventListener("click", function (e) {
+      if (user.isLogged()) {
+        location.href = "/Table/table.html";
+      }
+    });
   })();
 };

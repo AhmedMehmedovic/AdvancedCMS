@@ -14,7 +14,14 @@ const user = {
     storage.init(email);
     let userData = storage.data.user ?? {};
     let passwordDb = userData.password ?? undefined;
+    if (email !== userData.email) {
+      user.errors.push("Email is not exist, please sign up!");
+      return false;
+    }
+
     if (password !== passwordDb) {
+      user.errors.push("Password is incorect!");
+
       return false;
     }
     for (const [key, value] of Object.entries(this)) {
@@ -24,6 +31,7 @@ const user = {
     for (const [key, value] of Object.entries(userData)) {
       this[key] = value;
     }
+    return true;
   },
 
   register: function () {
@@ -48,8 +56,12 @@ const user = {
       //this.update();
       user.errors.push("User is registered!");
 
-      return false;
+      // return false;
       //throw Error("User is registered");
+    } else {
+      user.errors.push("User is not registred, please sign up!");
+      location.href = "/Registration/index.html";
+      return false;
     }
     this.update();
     location.reload();
@@ -59,8 +71,8 @@ const user = {
   update: function () {
     let storageKey = this.email ?? undefined;
     if (storageKey === undefined) {
-      //throw Error("User is not exist");
-      user.errors.push("User is not exist!");
+      throw Error("User is not exist");
+      //user.errors.push("User is not exist!");
     }
     storage.init(storageKey);
     if (typeof storage.data.user === "undefined") {
