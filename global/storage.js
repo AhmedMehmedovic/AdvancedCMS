@@ -26,6 +26,7 @@ const storage = {
     }
 
     this.data = JSON.parse(data);
+
     return this;
   },
 };
