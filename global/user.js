@@ -53,14 +53,9 @@ const user = {
     let userExist = storage.init(this.email);
 
     if (userExist) {
-      //this.update();
-      user.errors.push("User is registered!");
+      modal(document.getElementsByClassName("modal-container")[0]).add("User is registered, please sign in!");
+      modal(document.getElementsByClassName("modal-container")[0]).show();
 
-      // return false;
-      //throw Error("User is registered");
-    } else {
-      user.errors.push("User is not registred, please sign up!");
-      location.href = "/Registration/index.html";
       return false;
     }
     this.update();

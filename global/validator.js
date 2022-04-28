@@ -64,8 +64,8 @@ const validator = {
     },
 
     name: function (value) {
-      validator.rules.minLenght(value);
-      validator.rules.maxLenght(value, 15, "Name must have max 15 caracters!");
+      validator.rules.minLenght(value, 3, "Name and lastname must have min 15 caracters!");
+      validator.rules.maxLenght(value, 15, "Name and lastname must have max 15 caracters!");
     },
 
     phone: function (value) {

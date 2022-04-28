@@ -3,6 +3,12 @@ user.init("amel@amell.ba", "123l");
 user.testnaVarijabla = true;
 user.update();
 */
+document.addEventListener("DOMContentLoaded", function (e) {
+  if (!user.isLogged()) {
+    location.href = "/HomePage/index.html";
+  } else return false;
+});
+
 /**
  *
  * @param {HTMLElement} element
@@ -102,6 +108,7 @@ const tables = function (element, columns) {
       // Save button in action
       let saveButton = document.createElement("button");
       saveButton.innerText = "Save";
+      storage.data.inputs = [];
 
       saveButton.addEventListener("click", function (e) {
         // Taking all elements from newrow
@@ -110,6 +117,19 @@ const tables = function (element, columns) {
         inputColumn.forEach((input) => {
           newInputs.push(input.value);
         });
+
+        //////
+
+        // Add to input in storage
+        storage.key = cookie.getItem("session");
+        storage.init(storage.key);
+
+        if (storage.data.inputs == undefined) {
+          storage.data.inputs = [];
+        }
+        storage.data.inputs.push(newInputs);
+        storage.save();
+        ///
 
         let div = document.createElement("div");
 
@@ -128,14 +148,25 @@ const tables = function (element, columns) {
         editButton.addEventListener("click", (e) => {
           let tds = newRowData.querySelectorAll("td:not(:first-child)");
 
+          //console.log(tds);
+          //console.log(newRowData.rowIndex - 1);
+
+          let storageData = storage.data.input;
+          console.log(e.target);
           for (let index = 0; index < tds.length; index++) {
             const element = tds[index];
+            // console.log(element);
 
             let editInput = document.createElement("input");
             editInput.value = element.innerText;
 
             element.innerHTML = "";
             element.appendChild(editInput);
+            //storage.data.inputs[newRowData.rowIndex - 2] = editInput.value;
+            console.log(editInput.value);
+            storage.data.inputs[newRowData.rowIndex - 2] = newInputs;
+
+            console.log(storage.data.inputs[newRowData.rowIndex - 2]);
           }
 
           let updateButton = document.createElement("button");
@@ -147,7 +178,15 @@ const tables = function (element, columns) {
               const element = tdsUpdate[index];
               const input = element.querySelector("input");
               element.innerHTML = input.value;
+
+              console.log(input.value);
+              newInputs.splice(0, newInputs.length, input.value);
+              //newInputs.push(input.value);
+              storage.data.inputs = newInputs;
+
+              storage.save();
             }
+
             updateButton.replaceWith(editButton);
             button.disabled = false;
           });
@@ -162,7 +201,7 @@ const tables = function (element, columns) {
 
         let newRowData = row(tbody, [div, ...newInputs]);
 
-        console.log(newRowData);
+        // console.log(newRow);
 
         //rowsTable.reverse();
         // console.log(rowsTable);
@@ -210,8 +249,8 @@ const tables = function (element, columns) {
     logOutBtn.addEventListener("click", function (e) {
       if (confirm("Do you want log out?")) {
         cookie.removeItem("session");
-        // location.href = "/HomePage/index.html";
-        location.reload();
+
+        location.href = "/HomePage/index.html";
       } else {
         return false;
       }
@@ -226,4 +265,8 @@ const tables = function (element, columns) {
       }
     });
   })();
+
+  const loadContent = function () {
+    let content = localStorage.getItem(this.key, JSON.parse(this.data));
+  };
 };

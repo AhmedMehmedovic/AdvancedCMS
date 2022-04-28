@@ -21,13 +21,8 @@ document.addEventListener("DOMContentLoaded", function (e) {
         user.email = email;
         user.password = password;
 
-        //user.init(email, password)
-        // user.init(email, password);
-
-        // storage.init(email);
-        //user.register();
         let registerModal = modal(document.querySelector("div.modal-container"));
-        // const userExist = user.init(email, password);
+
         validator.inputs.password(password);
         validator.inputs.email(email);
         if (validator.errors.length > 0) {
@@ -44,12 +39,6 @@ document.addEventListener("DOMContentLoaded", function (e) {
           registerModal.add(user.getErrors());
           registerModal.show();
         }
-        //location.href = "/Table/table.html";
-        // if (!userExist) {
-        //registerModal.add(user.errors);
-        //registerModal.show();
-        // }
-        //registerModal.show();
       });
     },
   };

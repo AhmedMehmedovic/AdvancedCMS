@@ -29,4 +29,5 @@ const storage = {
 
     return this;
   },
+  append: function () {},
 };
