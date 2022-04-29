@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", function (e) {
   if (!user.isLogged()) {
     location.href = "/HomePage/index.html";
   } else return false;
+  contentLoadedStorage();
+  //paginationCreate();
+  //let tabela3 = tables(document.getElementById("tabela3"), storage.data.inputs);
 });
 
 /**
@@ -19,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
 
 const tables = function (element, columns) {
   columns = ["Action", ...columns];
+
   /**
    *
    * @param {HTMLElement} type
@@ -41,12 +45,35 @@ const tables = function (element, columns) {
     type.appendChild(row);
     return row;
   };
+  const paginationCreate = function () {
+    let bodyTable = document.querySelector("div.container div.body div.table-wraper");
+    let select = document.createElement("select");
+    select.setAttribute("name", "pagination");
+
+    let selectOpt1 = document.createElement("option");
+    let selectOpt2 = document.createElement("option");
+    let selectOpt3 = document.createElement("option");
+
+    selectOpt1.value = 10;
+    selectOpt2.value = 20;
+    selectOpt3.value = 30;
+
+    selectOpt1.innerText = 10;
+    selectOpt2.innerText = 20;
+    selectOpt3.innerText = 30;
+    select.appendChild(selectOpt1);
+    select.appendChild(selectOpt2);
+    select.appendChild(selectOpt3);
+
+    bodyTable.prepend(select);
+  };
   const wraper = (function () {
     let wraper = document.createElement("div");
     wraper.classList.add("table-wraper");
 
     element.parentNode.replaceChild(wraper, element);
     wraper.appendChild(element);
+    paginationCreate();
     return wraper;
   })();
 
@@ -93,7 +120,7 @@ const tables = function (element, columns) {
     }
   };
 
-  const addNew = function () {
+  const addNew = function (inputsStorage) {
     let button = document.createElement("button");
     button.innerText = "Add +";
     button.addEventListener("click", function (e) {
@@ -113,7 +140,7 @@ const tables = function (element, columns) {
       saveButton.addEventListener("click", function (e) {
         // Taking all elements from newrow
         let inputColumn = newRow.querySelectorAll("input");
-        let newInputs = [];
+        let newInputs = inputsStorage ?? [];
         inputColumn.forEach((input) => {
           newInputs.push(input.value);
         });
@@ -124,10 +151,10 @@ const tables = function (element, columns) {
         storage.key = cookie.getItem("session");
         storage.init(storage.key);
 
-        if (storage.data.inputs == undefined) {
-          storage.data.inputs = [];
+        if (storage.data[element.id] == undefined) {
+          storage.data[element.id] = [];
         }
-        storage.data.inputs.push(newInputs);
+        storage.data[element.id].push(newInputs);
         storage.save();
         ///
 
@@ -138,6 +165,8 @@ const tables = function (element, columns) {
         let deleteButton = document.createElement("button");
         deleteButton.innerText = "Delete";
         deleteButton.addEventListener("click", (e) => {
+          storage.data[element.id].splice([newRowData.rowIndex - 2], 1);
+          storage.save();
           newRowData.remove();
         });
 
@@ -148,25 +177,14 @@ const tables = function (element, columns) {
         editButton.addEventListener("click", (e) => {
           let tds = newRowData.querySelectorAll("td:not(:first-child)");
 
-          //console.log(tds);
-          //console.log(newRowData.rowIndex - 1);
-
-          let storageData = storage.data.input;
-          console.log(e.target);
           for (let index = 0; index < tds.length; index++) {
             const element = tds[index];
-            // console.log(element);
 
             let editInput = document.createElement("input");
             editInput.value = element.innerText;
 
             element.innerHTML = "";
             element.appendChild(editInput);
-            //storage.data.inputs[newRowData.rowIndex - 2] = editInput.value;
-            console.log(editInput.value);
-            storage.data.inputs[newRowData.rowIndex - 2] = newInputs;
-
-            console.log(storage.data.inputs[newRowData.rowIndex - 2]);
           }
 
           let updateButton = document.createElement("button");
@@ -174,19 +192,17 @@ const tables = function (element, columns) {
           updateButton.addEventListener("click", function (e) {
             let tdsUpdate = newRowData.querySelectorAll("td:not(:first-child)");
 
+            newInputs = [];
+
             for (let index = 0; index < tdsUpdate.length; index++) {
               const element = tdsUpdate[index];
               const input = element.querySelector("input");
               element.innerHTML = input.value;
 
-              console.log(input.value);
-              newInputs.splice(0, newInputs.length, input.value);
-              //newInputs.push(input.value);
-              storage.data.inputs = newInputs;
-
-              storage.save();
+              newInputs.push(input.value);
             }
-
+            storage.data[element.id][newRowData.rowIndex - 2] = newInputs;
+            storage.save();
             updateButton.replaceWith(editButton);
             button.disabled = false;
           });
@@ -200,11 +216,6 @@ const tables = function (element, columns) {
         div.appendChild(deleteButton);
 
         let newRowData = row(tbody, [div, ...newInputs]);
-
-        // console.log(newRow);
-
-        //rowsTable.reverse();
-        // console.log(rowsTable);
 
         newRow.remove();
         button.disabled = false;
@@ -233,7 +244,6 @@ const tables = function (element, columns) {
 
   const formaInputsUnsearch = (function () {
     let searhInputs = inputs(addNew());
-    // console.log(searhInputs);
     row(thead, searhInputs);
     for (let index = 1; index < searhInputs.length; index++) {
       const input = searhInputs[index];
@@ -266,7 +276,18 @@ const tables = function (element, columns) {
     });
   })();
 
-  const loadContent = function () {
-    let content = localStorage.getItem(this.key, JSON.parse(this.data));
-  };
+  const contentLoadedStorage = (function () {
+    storage.key = cookie.getItem("session");
+    storage.init(storage.key);
+
+    let contentStorage = storage.data[element.id];
+
+    for (let index = 0; index < contentStorage.length; index++) {
+      const element = contentStorage[index];
+
+      addNew(element);
+
+      console.log(element);
+    }
+  })();
 };

@@ -25,11 +25,13 @@
           <button class="log-out">Log out</button>
         </div>
         <div class="body">
-            <select name="pagination" >
+            <!-- <select name="pagination" >
             <option value="10">10</option>
             <option value="20">20</option>
-            <option value="30">30</option></select>
+            <option value="30">30</option></select> -->
             <table id="tabela1"></table>
+            <table id="tabela2"></table>
+
 
           <div class="paginationButtons">
             <button class="previousPage">Previous</button>
@@ -60,6 +62,8 @@
     </div>
     <script>
       let tabela1 = tables(document.getElementById("tabela1"), ["ID", "First Name", "Last Name", "Notes"]);
+
+      let tabela2 = tables(document.getElementById("tabela2"), ["ID", "First Name", "Last Name", "Notes"]);
 
       let testModal = modal(document.getElementsByClassName("modal-container")[0]);
     </script>

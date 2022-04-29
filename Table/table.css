@@ -8,6 +8,7 @@ td {
 }
 table {
   width: 99%;
+  background-color: #78b0b0;
 }
 div.table-wraper {
   padding: 20px;
@@ -32,6 +33,9 @@ div.table-wraper table tbody tr td:nth-child(1) div {
 div.table-wraper table tbody tr td:not(:first-child) input {
   width: 97%;
   overflow: hidden;
+}
+div.table-wraper table tbody tr td:not(:first-child) {
+  padding-left: 10px;
 }
 div.table-wraper table td {
   height: 40px;
@@ -67,15 +71,16 @@ div.container div.header button {
   margin-right: 150px;
   width: 70px;
   height: 30px;
+  background-color: #ea7b90;
 }
 div.container div.body {
   height: 75%;
-
   width: 100%;
   display: flex;
-  flex-direction: column;
   align-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  overflow: hidden;
 }
 div.container div.body select {
   width: 50px;
@@ -88,7 +93,8 @@ div.container div.body div.paginationButtons button {
   height: 30px;
 }
 div.container div.body div.paginationButtons {
-  margin-left: 36.5%;
+  margin-left: 43.5%;
+  margin-bottom: 1%;
 }
 div.container div.body div.paginationButtons a {
   text-decoration: blink;
