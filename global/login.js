@@ -1,9 +1,9 @@
 "use strict";
+if (user.isLogged()) {
+  location.href = "/Table/table.html";
+}
 
 document.addEventListener("DOMContentLoaded", function (e) {
-  if (user.isLogged()) {
-    location.href = "/Table/table.html";
-  }
   const login = {
     inputs: {
       email: document.querySelector('div.container div.body form input[type="email"]'),
@@ -32,9 +32,10 @@ document.addEventListener("DOMContentLoaded", function (e) {
         }
 
         if (user.init(email, password)) {
-          location.href = "/Table/table.html";
-          storage.save();
           cookie.setItem("session", email);
+          location.href = "/Table/table.html";
+
+          // storage.save();
         } else {
           registerModal.add(user.getErrors());
           registerModal.show();

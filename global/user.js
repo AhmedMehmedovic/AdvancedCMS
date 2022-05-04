@@ -65,6 +65,7 @@ const user = {
 
   update: function () {
     let storageKey = this.email ?? undefined;
+
     if (storageKey === undefined) {
       throw Error("User is not exist");
       //user.errors.push("User is not exist!");
@@ -77,21 +78,21 @@ const user = {
       if (key !== "errors") storage.data.user[key] = value;
     }
     storage.save();
-    cookie.setItem("session", this.email);
+    //cookie.setItem("session", this.email);
   },
-
   isLogged: function () {
     let session = cookie.getItem("session");
-    if (session !== false) {
-      this.storageKey = session;
-      this.data = localStorage.getItem(this.storageKey);
 
-      if (this.data == null) {
-        return false;
-      }
-      this.data = JSON.parse(this.data);
-      return true;
+    storage.init(session);
+    let userData = storage.data.user ?? {};
+
+    if (session !== userData.email) {
+      return false;
     }
-    return false;
+
+    for (const [key, value] of Object.entries(userData)) {
+      this[key] = value;
+    }
+    return true;
   },
 };

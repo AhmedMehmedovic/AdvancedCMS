@@ -3,22 +3,12 @@ user.init("amel@amell.ba", "123l");
 user.testnaVarijabla = true;
 user.update();
 */
-document.addEventListener("DOMContentLoaded", function (e) {
-  if (!user.isLogged()) {
-    location.href = "/HomePage/index.html";
-  } else return false;
-  contentLoadedStorage();
-  //paginationCreate();
-  //let tabela3 = tables(document.getElementById("tabela3"), storage.data.inputs);
-});
 
 /**
  *
  * @param {HTMLElement} element
  * @returns
  */
-
-//const { userInfo } = require("os");
 
 const tables = function (element, columns) {
   columns = ["Action", ...columns];
@@ -45,8 +35,22 @@ const tables = function (element, columns) {
     type.appendChild(row);
     return row;
   };
+
   const paginationCreate = function () {
-    let bodyTable = document.querySelector("div.container div.body div.table-wraper");
+    const div = document.createElement("div");
+    div.classList.add("buttonsPagination");
+    const previousbtn = document.createElement("button");
+    previousbtn.classList.add("previousPage");
+    previousbtn.innerText = "Previous";
+    const aPG = document.createElement("a");
+    aPG.innerText = "Page";
+    const nextbtn = document.createElement("button");
+    nextbtn.classList.add("nextPage");
+    nextbtn.innerText = "Next";
+    div.appendChild(previousbtn);
+    div.appendChild(aPG);
+    div.appendChild(nextbtn);
+
     let select = document.createElement("select");
     select.setAttribute("name", "pagination");
 
@@ -65,7 +69,9 @@ const tables = function (element, columns) {
     select.appendChild(selectOpt2);
     select.appendChild(selectOpt3);
 
-    bodyTable.prepend(select);
+    //element.appendChild(select);
+    element.appendChild(select);
+    element.appendChild(div);
   };
   const wraper = (function () {
     let wraper = document.createElement("div");
@@ -81,13 +87,14 @@ const tables = function (element, columns) {
     let thead = document.createElement("thead");
     element.appendChild(thead);
     row(thead, columns);
-
+    //paginationCreate();
     return thead;
   })();
 
   const tbody = (function () {
     let tbody = document.createElement("tbody");
     element.appendChild(tbody);
+
     return tbody;
   })();
 
@@ -121,6 +128,8 @@ const tables = function (element, columns) {
   };
 
   const addNew = function (inputsStorage) {
+    //user[element.id] = [];
+
     let button = document.createElement("button");
     button.innerText = "Add +";
     button.addEventListener("click", function (e) {
@@ -140,23 +149,12 @@ const tables = function (element, columns) {
       saveButton.addEventListener("click", function (e) {
         // Taking all elements from newrow
         let inputColumn = newRow.querySelectorAll("input");
-        let newInputs = inputsStorage ?? [];
-        inputColumn.forEach((input) => {
-          newInputs.push(input.value);
-        });
-
-        //////
+        let newInputs = Object.values(inputColumn).map((i) => i.value);
 
         // Add to input in storage
-        storage.key = cookie.getItem("session");
-        storage.init(storage.key);
 
-        if (storage.data[element.id] == undefined) {
-          storage.data[element.id] = [];
-        }
-        storage.data[element.id].push(newInputs);
-        storage.save();
-        ///
+        user[element.id].push(newInputs);
+        user.update();
 
         let div = document.createElement("div");
 
@@ -165,9 +163,10 @@ const tables = function (element, columns) {
         let deleteButton = document.createElement("button");
         deleteButton.innerText = "Delete";
         deleteButton.addEventListener("click", (e) => {
-          storage.data[element.id].splice([newRowData.rowIndex - 2], 1);
-          storage.save();
+          user[element.id].splice([newRowData.rowIndex - 2], 1);
+
           newRowData.remove();
+          user.update();
         });
 
         ///Edit button
@@ -192,17 +191,19 @@ const tables = function (element, columns) {
           updateButton.addEventListener("click", function (e) {
             let tdsUpdate = newRowData.querySelectorAll("td:not(:first-child)");
 
-            newInputs = [];
+            //newInputs = [];
 
             for (let index = 0; index < tdsUpdate.length; index++) {
               const element = tdsUpdate[index];
               const input = element.querySelector("input");
               element.innerHTML = input.value;
 
-              newInputs.push(input.value);
+              console.log(newInputs);
+
+              //newInputs.push(input.value);
             }
-            storage.data[element.id][newRowData.rowIndex - 2] = newInputs;
-            storage.save();
+            user[element.id][newRowData.rowIndex - 2] = newInputs;
+            user.update();
             updateButton.replaceWith(editButton);
             button.disabled = false;
           });
@@ -239,9 +240,17 @@ const tables = function (element, columns) {
       // New row create with action buttons
       let newRow = row(thead, inputs(div));
     });
+
     return button;
   };
 
+  const loadContent = (function () {
+    //console.log(user[element.id]);
+    for (const row of user[element.id]) {
+      //console.log(row);
+      addNew(row);
+    }
+  })();
   const formaInputsUnsearch = (function () {
     let searhInputs = inputs(addNew());
     row(thead, searhInputs);
@@ -251,43 +260,6 @@ const tables = function (element, columns) {
       input.addEventListener("keyup", function (e) {
         console.log(e.target.value);
       });
-    }
-  })();
-
-  const logOut = (function (e) {
-    let logOutBtn = document.querySelector("div.container div.header button");
-    logOutBtn.addEventListener("click", function (e) {
-      if (confirm("Do you want log out?")) {
-        cookie.removeItem("session");
-
-        location.href = "/HomePage/index.html";
-      } else {
-        return false;
-      }
-    });
-  })();
-  const returnHome = (function () {
-    let returnBtn = document.querySelector("div.container div.footer a");
-
-    returnBtn.addEventListener("click", function (e) {
-      if (user.isLogged()) {
-        location.href = "/Table/table.html";
-      }
-    });
-  })();
-
-  const contentLoadedStorage = (function () {
-    storage.key = cookie.getItem("session");
-    storage.init(storage.key);
-
-    let contentStorage = storage.data[element.id];
-
-    for (let index = 0; index < contentStorage.length; index++) {
-      const element = contentStorage[index];
-
-      addNew(element);
-
-      console.log(element);
     }
   })();
 };

@@ -1,4 +1,3 @@
-table,
 thead,
 tbody,
 tr,
@@ -7,13 +6,18 @@ td {
   border: 1px solid black;
 }
 table {
-  width: 99%;
-  background-color: #78b0b0;
+  /* width: 99%; */
+
+  display: block;
+  /*display: flex;
+  flex-direction: column;
+  background-color: #78b0b0;*/
 }
 div.table-wraper {
   padding: 20px;
   width: 83%;
   height: 81%;
+  display: block;
 }
 div.table-wraper table tbody {
   height: auto !important;
@@ -85,12 +89,10 @@ div.container div.body {
 div.container div.body select {
   width: 50px;
   height: 30px;
-  margin-left: 22px;
 }
 
-div.container div.body div.paginationButtons button {
-  width: 80px;
-  height: 30px;
+div.container div.body table div.buttonsPagination {
+  display: table-footer-group;
 }
 div.container div.body div.paginationButtons {
   margin-left: 43.5%;
@@ -106,4 +108,8 @@ div.container div.footer a {
 div.container div.footer {
   display: flex;
   justify-content: center;
+}
+
+div.container div.body {
+  overflow: scroll;
 }

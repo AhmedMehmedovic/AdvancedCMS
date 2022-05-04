@@ -1,7 +1,10 @@
+if (user.isLogged()) {
+  location.href = "/Table/table.html";
+}
 document.addEventListener("DOMContentLoaded", function (e) {
-  if (user.isLogged()) {
-    location.href = "/Table/table.html";
-  }
+  // if (user.isLogged()) {
+  //   location.href = "/Table/table.html";
+  // } else return false;
 
   const registerPage = {
     inputs: {
