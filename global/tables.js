@@ -128,7 +128,7 @@ const tables = function (element, columns) {
   };
 
   const addNew = function (inputsStorage) {
-    //user[element.id] = [];
+    user[element.id] = [];
 
     let button = document.createElement("button");
     button.innerText = "Add +";
@@ -144,16 +144,17 @@ const tables = function (element, columns) {
       // Save button in action
       let saveButton = document.createElement("button");
       saveButton.innerText = "Save";
-      storage.data.inputs = [];
 
       saveButton.addEventListener("click", function (e) {
         // Taking all elements from newrow
         let inputColumn = newRow.querySelectorAll("input");
+
         let newInputs = Object.values(inputColumn).map((i) => i.value);
 
         // Add to input in storage
 
         user[element.id].push(newInputs);
+
         user.update();
 
         let div = document.createElement("div");
@@ -184,6 +185,7 @@ const tables = function (element, columns) {
 
             element.innerHTML = "";
             element.appendChild(editInput);
+            console.log(editInput.value);
           }
 
           let updateButton = document.createElement("button");
@@ -191,7 +193,7 @@ const tables = function (element, columns) {
           updateButton.addEventListener("click", function (e) {
             let tdsUpdate = newRowData.querySelectorAll("td:not(:first-child)");
 
-            //newInputs = [];
+            newInputs = [];
 
             for (let index = 0; index < tdsUpdate.length; index++) {
               const element = tdsUpdate[index];
@@ -200,7 +202,7 @@ const tables = function (element, columns) {
 
               console.log(newInputs);
 
-              //newInputs.push(input.value);
+              newInputs.push(input.value);
             }
             user[element.id][newRowData.rowIndex - 2] = newInputs;
             user.update();
@@ -245,11 +247,7 @@ const tables = function (element, columns) {
   };
 
   const loadContent = (function () {
-    //console.log(user[element.id]);
-    for (const row of user[element.id]) {
-      //console.log(row);
-      addNew(row);
-    }
+    let content = user[element.id];
   })();
   const formaInputsUnsearch = (function () {
     let searhInputs = inputs(addNew());
@@ -263,3 +261,49 @@ const tables = function (element, columns) {
     }
   })();
 };
+
+const sortiranje = function (niz, order = "asc") {
+  let sorting = true;
+
+  while (sorting) {
+    sorting = false;
+
+    for (let i = 0; i < niz.length; i++) {
+      if (niz[i] > niz[i + 1] && order === "asc") {
+        let temp = niz[i];
+        niz[i] = niz[i + 1];
+        niz[i + 1] = temp;
+        sorting = true;
+      }
+    }
+    if (order === "desc") {
+      for (let i = 0; i < niz.length; i++) {
+        if (niz[i] < niz[i + 1]) {
+          let temp = niz[i];
+          niz[i] = niz[i + 1];
+          niz[i + 1] = temp;
+          sorting = true;
+        }
+      }
+    }
+  }
+  return niz;
+};
+
+//console.log(arr1, arr2);
+
+// for (let index = 0; index < niz.length; index++) {
+//   const element = niz[index];
+
+//   if (element > element + 1) {
+//   }
+// niz.forEach((element1) => {
+//   if (element < element1) {
+//     console.log(element);
+//   }
+// });
+
+// for (let i = 0; i < element.length; i++) {
+//   const clan = element[i];
+//   console.log(clan);
+// }
