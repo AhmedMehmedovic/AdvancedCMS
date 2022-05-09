@@ -128,8 +128,6 @@ const tables = function (element, columns) {
   };
 
   const addNew = function (inputsStorage) {
-    user[element.id] = [];
-
     let button = document.createElement("button");
     button.innerText = "Add +";
     button.addEventListener("click", function (e) {
@@ -150,12 +148,6 @@ const tables = function (element, columns) {
         let inputColumn = newRow.querySelectorAll("input");
 
         let newInputs = Object.values(inputColumn).map((i) => i.value);
-
-        // Add to input in storage
-
-        user[element.id].push(newInputs);
-
-        user.update();
 
         let div = document.createElement("div");
 
@@ -214,6 +206,15 @@ const tables = function (element, columns) {
           button.disabled = true;
         });
 
+        // Add to input in storage
+
+        user[element.id] = { ...[newInputs] };
+
+        //
+        //user[element.id].push(this.id, newInputs);
+
+        user.update();
+
         div.appendChild(editButton);
 
         div.appendChild(deleteButton);
@@ -262,33 +263,33 @@ const tables = function (element, columns) {
   })();
 };
 
-const sortiranje = function (niz, order = "asc") {
-  let sorting = true;
+// const sortiranje = function (niz, order = "asc") {
+//   let sorting = true;
 
-  while (sorting) {
-    sorting = false;
+//   while (sorting) {
+//     sorting = false;
 
-    for (let i = 0; i < niz.length; i++) {
-      if (niz[i] > niz[i + 1] && order === "asc") {
-        let temp = niz[i];
-        niz[i] = niz[i + 1];
-        niz[i + 1] = temp;
-        sorting = true;
-      }
-    }
-    if (order === "desc") {
-      for (let i = 0; i < niz.length; i++) {
-        if (niz[i] < niz[i + 1]) {
-          let temp = niz[i];
-          niz[i] = niz[i + 1];
-          niz[i + 1] = temp;
-          sorting = true;
-        }
-      }
-    }
-  }
-  return niz;
-};
+//     for (let i = 0; i < niz.length; i++) {
+//       if (niz[i] > niz[i + 1] && order === "asc") {
+//         let temp = niz[i];
+//         niz[i] = niz[i + 1];
+//         niz[i + 1] = temp;
+//         sorting = true;
+//       }
+//     }
+//     if (order === "desc") {
+//       for (let i = 0; i < niz.length; i++) {
+//         if (niz[i] < niz[i + 1]) {
+//           let temp = niz[i];
+//           niz[i] = niz[i + 1];
+//           niz[i + 1] = temp;
+//           sorting = true;
+//         }
+//       }
+//     }
+//   }
+//   return niz;
+// };
 
 //console.log(arr1, arr2);
 
