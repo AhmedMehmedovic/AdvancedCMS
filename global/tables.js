@@ -128,6 +128,9 @@ const tables = function (element, columns) {
   };
 
   const addNew = function (inputsStorage) {
+    user.data;
+    // let elementId = element.id;
+    // user[elementId] = {};
     let button = document.createElement("button");
     button.innerText = "Add +";
     button.addEventListener("click", function (e) {
@@ -145,11 +148,23 @@ const tables = function (element, columns) {
 
       saveButton.addEventListener("click", function (e) {
         // Taking all elements from newrow
+
         let inputColumn = newRow.querySelectorAll("input");
 
         let newInputs = Object.values(inputColumn).map((i) => i.value);
 
         let div = document.createElement("div");
+
+        //user.data.elementId;
+
+        //let lastKey = Object.keys(user[elementId]).pop();
+        // Add to input in storage
+
+        //user.elementId = newInputs;
+        //
+        // Object.keys()=user[element.id]
+
+        user.update();
 
         ///Delete button
 
@@ -205,15 +220,6 @@ const tables = function (element, columns) {
 
           button.disabled = true;
         });
-
-        // Add to input in storage
-
-        user[element.id] = { ...[newInputs] };
-
-        //
-        //user[element.id].push(this.id, newInputs);
-
-        user.update();
 
         div.appendChild(editButton);
 
@@ -308,3 +314,103 @@ const tables = function (element, columns) {
 //   const clan = element[i];
 //   console.log(clan);
 // }
+
+// const Car1 = function (carName, speed) {
+//   this.carName = carName;
+//   this.speed = speed;
+// };
+
+// Car1.prototype.accelerate = function () {
+//   this.speed += 10;
+//   console.log(`${this.carName} is going ${this.speed} km/h`);
+// };
+// Car1.prototype.brake = function () {
+//   this.speed -= 5;
+//   console.log(`${this.carName} is going ${this.speed} km/h`);
+// };
+
+// const EV = function (carName, speed, charge) {
+//   Car1.call(this, carName, speed);
+//   this.charge = charge;
+// };
+// EV.prototype = Object.create(Car1.prototype);
+
+// EV.prototype.chargeBattery = function (chargeTo) {
+//   this.charge = chargeTo;
+// };
+
+// EV.prototype.accelerate = function () {
+//   this.speed += 20;
+//   this.charge--;
+//   console.log(`${this.carName} going at ${this.speed} km/h , with a charge of ${this.charge}.`);
+// };
+
+// class CarCl {
+//   constructor(make, speed) {
+//     this.make = make;
+//     this.speed = speed;
+//   }
+//   accelerate() {
+//     this.speed += 10;
+//     console.log(`${this.make} is going at ${this.speed} km/h`);
+//   }
+//   brake() {
+//     this.speed -= 5;
+//     console.log(`${this.make} is going at ${this.speed} km/h`);
+//     return this;
+//   }
+//   get speedUS() {
+//     return this.speed / 1.6;
+//   }
+//   set speedUS(speed) {
+//     this.speed = speed * 1.6;
+//   }
+// }
+
+// class EVCl extends CarCl {
+//   #charge;
+//   constructor(make, speed, charge) {
+//     super(make, speed);
+//     this.#charge = charge;
+//   }
+//   chargeBattery(chargeTo) {
+//     this.#charge = chargeTo;
+//     return this;
+//   }
+//   accelerate() {
+//     this.speed += 20;
+//     this.#charge--;
+//     console.log(`${this.make} is going at ${this.speed} km/h, with a charge of ${this.#charge}`);
+//     return this;
+//   }
+// }
+/*
+///////////////////////////////////////
+// Inheritance Between "Classes": Constructor Functions
+const Person = function (firstName, birthYear) {
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+};
+Person.prototype.calcAge = function () {
+  console.log(2037 - this.birthYear);
+};
+const Student = function (firstName, birthYear, course) {
+  Person.call(this, firstName, birthYear);
+  this.course = course;
+};
+// Linking prototypes
+Student.prototype = Object.create(Person.prototype);
+Student.prototype.introduce = function () {
+  console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+const mike = new Student("Mike", 2020, "Computer Science");
+mike.introduce();
+mike.calcAge();
+console.log(mike.__proto__);
+console.log(mike.__proto__.__proto__);
+console.log(mike instanceof Student);
+console.log(mike instanceof Person);
+console.log(mike instanceof Object);
+Student.prototype.constructor = Student;
+console.dir(Student.prototype.constructor);
+*/
