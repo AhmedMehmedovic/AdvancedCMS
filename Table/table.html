@@ -8,21 +8,23 @@
     <link rel="stylesheet" href="../global/modal.css">
     <script src="../global/modal.js"></script>
     
-    <script src="../global/classHtml.js"></script>
     <script src="../global/cookies.js"></script>
     <script src="../global/storage.js"></script>
     <script src="../global/user.js"></script>
     <script src="../global/validator.js"></script>
-    <script src="../Table/table.js"></script>
+    
+    <script src="../global/classHtml.js"></script>
+    <!-- <script src="../Table/table.js"></script> -->
     <!-- <script src="../global/tables1.js"></script> -->
 
-
-    <script src="../global/tables.js"></script>
+<!-- 
+    <script src="../global/tables.js"></script> -->
 
     <title>Table</title>
   </head>
   <body>
     <div class="container">
+      
         <div class="header">
           <h1>Table page</h1>
           <p>Write you're data and save it for later.</p>
@@ -30,8 +32,9 @@
         </div>
         <div class="body">
             
-            <table id="tabela1"></table>
-            <table id="tabela2"></table>
+            <!-- <table id="tabela1"></table>
+            <table id="tabela2"></table> -->
+            <table id="example"></table>
 
         </div>
         <div class="footer">
@@ -54,9 +57,9 @@
       </div>
     </div>
     <script>
-      let tabela1 = tables(document.getElementById("tabela1"), ["ID", "First Name", "Last Name", "Notes"]);
+     // let tabela1 = tables(document.getElementById("tabela1"), ["ID", "First Name", "Last Name", "Notes"]);
 
-      let tabela2 = tables(document.getElementById("tabela2"), ["ID", "First Name", "Last Name", "Notes"]);
+     // let tabela2 = tables(document.getElementById("tabela2"), ["ID", "First Name", "Last Name", "Notes"]);
 
       let testModal = modal(document.getElementsByClassName("modal-container")[0]);
     </script>
