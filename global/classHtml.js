@@ -9,13 +9,15 @@ if (!user.isLogged()) {
  */
 
 class Html {
-  constructor(element, inputData = [], numberElement) {
+  constructor(element, inputData = [], inputCreate = false, innerButtonText, type) {
     this.element = element;
     this.inputsData = inputData;
-    this.numberElement = numberElement;
+    this.inputCreate = inputCreate;
+    this.innerButtonText = innerButtonText;
+    this.type = type;
   }
 
-  row(type, input = this.inputsData, inputCreate = false) {
+  row(type, input = this.inputsData, inputCreate = this.inputCreate) {
     let row = document.createElement("tr");
     let tbodyExist = this.element.querySelector("tbody");
 
@@ -62,7 +64,6 @@ class Html {
 
     return row;
   }
-
   wraper() {
     let wraper = document.createElement("div");
 
@@ -71,7 +72,6 @@ class Html {
 
     return wraper;
   }
-
   thead() {
     let thead = document.createElement("thead");
     this.element.appendChild(thead);
@@ -82,69 +82,115 @@ class Html {
     this.element.appendChild(tbody);
     return tbody;
   }
-  createButton(innerButtonText) {
+  createButton(innerButtonText = this.innerButtonText) {
     let button = document.createElement("button");
     button.classList.add(`${innerButtonText}`);
     button.innerText = `${innerButtonText}`;
-
     return button;
   }
 }
 
-document.addEventListener("DOMContentLoaded", (e) => {
-  let exampleElement = document.getElementById("example");
-
-  let tabelaHtml = new Html(exampleElement);
-  tabelaHtml.wraper();
-  tabelaHtml.row("th", ["Action", "Name", "Adress", "ID", "Phone", "Auto"]);
-  //tabelaHtml.row("td", [tabelaHtml.createButton("Add")], true);
-  tabelaHtml.row("td", iterateThead(), true);
-
-  let buttonAdd = exampleElement.querySelector(".Add");
-
-  function iterateThead() {
-    let dataTyped = exampleElement.querySelectorAll("table thead tr th");
-    let dataInputed = [];
-    for (const iterator of dataTyped) {
-      dataInputed.push(iterator.value);
-    }
-
-    return dataInputed;
+class createTabele extends Html {
+  constructor(element, inputData, inputCreate, innerButtonText, tableName) {
+    super(element, inputData, inputCreate, innerButtonText);
+    this.inputcreate = inputCreate;
+    this.tableName = tableName;
+    this.idTable = element;
   }
 
-  buttonAdd.addEventListener("click", (e) => {
-    e.preventDefault();
-    let numberCol = exampleElement.querySelectorAll("table thead tr th");
-    let dataS = [];
-    for (let i = 0; i < numberCol.length; i++) {
-      let element = numberCol[i];
-      element = "";
-      dataS.push(element);
-    }
-    tabelaHtml.row("", dataS, true);
+  createTab() {
+    this.tableName = new Html(this.idTable);
+    this.tableName.wraper();
+    this.tableName.row("th", this.inputsData);
+    this.tableName.row("td", this.inputsData, (this.inputcreate = true));
+  }
+}
 
-    buttonAdd.disabled = true;
+document.addEventListener("DOMContentLoaded", (e) => {
+  let t1 = new createTabele(example, ["Action", "Name", "Adress", "ID", "Phone", "Auto"], true, "ADD");
+  t1.createTab();
 
-    ///SAVE
-    let buttonSave = exampleElement.querySelector(".Save");
-    buttonSave.addEventListener("click", (e) => {
-      e.preventDefault();
-      let allInput = exampleElement.querySelectorAll("table tbody tr:nth-child(2) td input ");
-      let rowValue = [];
-      for (const iterator of allInput) {
-        rowValue.push(iterator.value);
-      }
-      user.data.exampleElement = new Map();
+  let t2 = new createTabele(example1, ["Action", "Name", "Adress", "ID", "Phone", "Auto"], true, "ameltab");
+  t2.createTab();
 
-      user.data.exampleElement[index] = rowValue;
-      user.update();
-      console.log(rowValue);
-      buttonSave.replaceWith(tabelaHtml.createButton("Edit"));
-      buttonSave.disabled = true;
-      buttonAdd.disabled = false;
-    });
-  });
-
-  //console.log(buttonAdd);
-  //let selec = row1.querySelector("td input");
+  let t3 = new createTabele(example2, ["Action", "Name", "Adress", "ID", "Phone", "Auto"], true, "ameltab");
+  t3.createTab();
 });
+
+// document.addEventListener("DOMContentLoaded", (e) => {
+//   let exampleElement = document.getElementById("example");
+
+//   let tabelaHtml = new Html(exampleElement);
+//   tabelaHtml.wraper();
+//   tabelaHtml.row("th", ["Action", "Name", "Adress", "ID", "Phone", "Auto"]);
+//   tabelaHtml.row("td", iterateThead(), true);
+
+//   let buttonAdd = exampleElement.querySelector(".Add");
+//   let rowAdd;
+//   function iterateThead() {
+//     let dataTyped = exampleElement.querySelectorAll("table thead tr th");
+//     let dataInputed = [];
+//     for (const iterator of dataTyped) {
+//       dataInputed.push(iterator.value);
+//     }
+
+//     return dataInputed;
+//   }
+//   function elementRemove(e) {
+//     e.remove();
+//   }
+
+//   buttonAdd.addEventListener("click", (e) => {
+//     e.preventDefault();
+
+//     let numberCol = exampleElement.querySelectorAll("table thead tr th");
+//     let dataS = [];
+//     for (let i = 0; i < numberCol.length; i++) {
+//       let element = numberCol[i];
+//       element = "";
+//       dataS.push(element);
+//     }
+//     rowAdd = tabelaHtml.row("", dataS, true);
+
+//     buttonAdd.disabled = true;
+
+//     ///SAVE
+
+//     let buttonSave = exampleElement.querySelector(".Save");
+//     buttonSave.addEventListener("click", (e) => {
+//       e.preventDefault();
+//       //console.log(e.target);
+//       let allInput = exampleElement.querySelectorAll("table tbody tr:nth-child(2) td input ");
+//       let rowValue = [];
+//       for (const iterator of allInput) {
+//         rowValue.push(iterator.value);
+//       }
+
+//       user.data.element = Object.values(rowValue);
+
+//       // console.log(user.data.element);
+//       user.update();
+//       buttonSave.replaceWith(tabelaHtml.createButton("Edit"));
+//       buttonSave.disabled = true;
+//       buttonAdd.disabled = false;
+//     });
+
+//     // DELETE
+//     let buttonDel = exampleElement.querySelector(".Delete");
+
+//     buttonDel.addEventListener("click", function (e) {
+//       e.preventDefault();
+//       // console.log(e.target);
+//       rowAdd.remove();
+
+//       elementRemove(allInput);
+//       buttonAdd.disabled = false;
+
+//       //allInput.removeChild(allInput);
+//       // console.log(allInput);
+//     });
+//   });
+
+//   //console.log(buttonAdd);
+//   //let selec = row1.querySelector("td input");
+// });
