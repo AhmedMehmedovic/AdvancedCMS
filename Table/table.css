@@ -23,13 +23,14 @@ div.table-wraper table tbody {
   height: auto !important;
   /*overflow: auto;*/
 }
+div.container div.body table thead tr:nth-child(1) th {
+}
 
 div.table-wraper table thead tr th:nth-child(1) {
-  display: inline-block;
+  display: flex;
   width: 100%;
 }
 
-div.table-wraper table thead tr th:nth-child(1) div,
 div.table-wraper table tbody tr td:nth-child(1) div {
   display: flex;
   justify-content: space-around;
@@ -76,6 +77,17 @@ div.container div.header button {
   width: 70px;
   height: 30px;
   background-color: #ea7b90;
+}
+div.container div.body table thead tr th button.X {
+  float: right;
+  display: none;
+}
+
+div.container div.body table thead tr th.asc::after {
+  content: "\02C4";
+}
+div.container div.body table thead tr th.desc::after {
+  content: "\02C5";
 }
 div.container div.body {
   height: 75%;

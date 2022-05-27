@@ -19,6 +19,13 @@ class HtmlTable {
 
     this.#createRow(this.thead, this.columns, "thead");
     this.#searchInputs();
+
+    setTimeout(() => {
+      this._event("ready", {
+        table: this,
+        element: this.element,
+      });
+    }, 50);
   }
 
   #createWrapper() {
@@ -40,13 +47,40 @@ class HtmlTable {
     return tbody;
   }
 
+  searchMethod(values) {
+    this._event("search", values);
+    let rows = this.tbody.querySelectorAll("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const tds = row.querySelectorAll("td:not(:first-child)");
+      let rowVisible = true;
+      for (let tdi = 0; tdi < tds.length; tdi++) {
+        const td = tds[tdi];
+        const searchTerm = values[tdi];
+        if (!td.innerText.includes(searchTerm) && searchTerm !== "") {
+          rowVisible = false;
+          break;
+        }
+      }
+      row.style.display = rowVisible ? "" : "none";
+    }
+  }
+
   #searchInputs() {
-    let addButton = this.#createButton("+");
+    let addButton = this._createButton("+");
     let self = this;
     addButton.addEventListener("click", function (e) {
       self.#createFormNewData(e);
     });
-    return this.#inputs(addButton, "Search");
+    const row = this.#inputs(addButton, "Search");
+    let inputs = row.querySelectorAll('input[placeholder^="Search"]');
+
+    for (const input of inputs) {
+      input.addEventListener("keyup", (e) => self.searchMethod(Object.values(inputs).map((el) => el.value)));
+    }
+
+    return row;
   }
 
   #inputs(element, placeholder = "", values = []) {
@@ -64,14 +98,14 @@ class HtmlTable {
     return this.#createRow(this.thead, inputs);
   }
 
-  #createButton(innerButtonText) {
+  _createButton(innerButtonText) {
     let button = document.createElement("button");
     button.classList.add(`${innerButtonText}`);
     button.innerText = `${innerButtonText}`;
     return button;
   }
 
-  #event(name, data) {
+  _event(name, data) {
     const event = new CustomEvent("dt." + name, {
       detail: data,
     });
@@ -80,7 +114,7 @@ class HtmlTable {
 
   #newRow(values, id, element, place = "prepend") {
     let self = this;
-    const edit = this.#createButton("Edit");
+    const edit = this._createButton("Edit");
     edit.addEventListener("click", (e) => {
       let button = e.target;
       let rowId = row.dataset.id;
@@ -89,16 +123,16 @@ class HtmlTable {
         td.setAttribute("contenteditable", button.innerText === "Edit" ? true : false);
       }
       if (button.innerText === "Save") {
-        self.#event("save", {
+        self._event("save", {
           id: rowId,
           values: Object.values(tds).map((el) => el.innerText),
         });
       }
       button.innerText = button.innerText === "Edit" ? "Save" : "Edit";
     });
-    const remove = this.#createButton("Delete");
+    const remove = this._createButton("Delete");
     remove.addEventListener("click", (e) => {
-      this.#event("deleted" + element.tagName, {
+      this._event("deleted" + element.tagName, {
         id: id ?? row.dataset.id,
         values: values,
       });
@@ -108,10 +142,12 @@ class HtmlTable {
     wrapper.append(edit);
     wrapper.append(remove);
     const row = this.#createRow(element, [wrapper, ...values], id, place);
-    this.#event("created" + element.tagName, {
+    this._event("updated" + element.tagName, {
       id: id ?? row.dataset.id,
       values: values,
     });
+
+    return row;
   }
 
   newBodyRow(values, id, place = "prepend") {
@@ -123,16 +159,20 @@ class HtmlTable {
 
   #createFormNewData(event) {
     let self = this;
-    let create = this.#createButton("Create");
-    let cancel = this.#createButton("Cancel");
+    let create = this._createButton("Create");
+    let cancel = this._createButton("Cancel");
 
     cancel.addEventListener("click", (e) => {
       row.remove();
     });
 
     create.addEventListener("click", (e) => {
-      let values = Object.values(row.querySelectorAll('input[placeholder^="Enter"]')).map((el) => el.value);
-      self.newBodyRow(values);
+      const values = Object.values(row.querySelectorAll('input[placeholder^="Enter"]')).map((el) => el.value);
+      const newRow = self.newBodyRow(values);
+      self._event("created", {
+        id: newRow.dataset.id,
+        values: values,
+      });
       row.remove();
     });
 
@@ -177,40 +217,197 @@ class HtmlTable {
   }
 }
 
-var t1;
 document.addEventListener("DOMContentLoaded", (e) => {
+  /// generate demo data
+  example.addEventListener("dt.ready", (e) => {
+    let data = e.detail;
+    console.log("READY", e.detail);
+    const tableStorage = new TableStorage(data.table, data.element);
+  });
   let randomData = [];
 
-  for (let index = 0; index < 50; index++) {
+  for (let index = 0; index <= 20; index++) {
     randomData[index] = ["Name", "Adress", "ID", "Phone", "Auto"].map((v) => v + index);
   }
-  t1 = new AdvancedTable(example, ["Name", "Adress", "ID", "Phone", "Auto"], randomData);
 
-  example.addEventListener("dt.save", (e) => {
-    console.log("EDITED", e.detail);
-  });
-
-  example.addEventListener("dt.createdTBODY", (e) => {
-    console.log("TBODY", e.detail);
-  });
-  example.addEventListener("dt.createdTHEAD", (e) => {
-    console.log("THEAD", e.detail);
-  });
-
-  example.addEventListener("dt.deletedTBODY", (e) => {
-    console.log("TBODY deleted", e.detail);
-  });
-  example.addEventListener("dt.deletedTHEAD", (e) => {
-    console.log("THEAD deleted", e.detail);
-  });
+  var t1 = new AdvancedTable(example, ["Name", "Adress", "ID", "Phone", "Auto"], randomData);
 });
 
 class AdvancedTable extends HtmlTable {
   #data;
+  #sortColumn = null;
+  #sortDirection = "asc";
+  #dataRender;
+  #searchFilter = [];
+  #lengthMenu;
+  #pagination;
+  #lengthMenuValue = 10;
+  #currentPage = 1;
   constructor(element, columns, data) {
     super(element, columns);
-    this.#data = data; /// potrebno je prvo filtrirat prema pretrazi, sortirat, izracunat za paginate, prikazat sa loadData()
+    this.#lengthMenu = this.#createLengthMenu();
 
-    this.loadData(this.#data);
+    this.#pagination = this.#createPaginate();
+    this.#data = data; /// potrebno je prvo filtrirat prema pretrazi, sortirat, izracunat za paginate, prikazat sa loadData()
+    this.#createSortRow();
+
+    let self = this;
+    ["dt.save", "dt.deletedTBODY", "dt.created", "dt.changeLengthMenu", "dt.currentPage", "dt.search"].forEach((evt) =>
+      element.addEventListener(evt, function (e) {
+        self.#renderContent();
+      })
+    );
+  }
+
+  #renderContent() {
+    this.#dataRender = structuredClone(this.#data);
+    this.#searchData(this.#searchFilter);
+    this.#sortData();
+    this.#paginateData();
+
+    this.tbody.innerHTML = "";
+    if (this.#dataRender.length === 0) {
+      this.loadData([["No results"]]);
+    } else {
+      this.loadData(this.#dataRender);
+    }
+  }
+
+  searchMethod(values) {
+    this.#searchFilter = values;
+    this._event("search", this.#searchFilter);
+  }
+
+  #searchData(values) {
+    console.log(this.#dataRender);
+
+    //this.#dataRender = this.#dataRender.splice(0, 19);
+  }
+  #sortData() {
+    //this.#dataRender = this.#dataRender.splice(0, 18);
+  }
+  #paginateData() {
+    //this.#dataRender = this.#dataRender.splice(0, 5);
+  }
+
+  #createSortRow() {
+    let self = this;
+    const thd = this.thead.querySelectorAll('tr[data-id="thead"] th:not(:first-child)');
+
+    for (let i = 0; i < thd.length; i++) {
+      const th = thd[i];
+      const exitBtn = this._createButton("X");
+
+      exitBtn.style.display = "none";
+      exitBtn.addEventListener("click", function (e) {
+        e.stopImmediatePropagation();
+        exitBtn.style.display = "none";
+        th.classList.remove("asc");
+        th.classList.remove("desc");
+      });
+
+      th.appendChild(exitBtn);
+      //  console.log(th);
+
+      th.addEventListener("click", function (e) {
+        const thd = self.thead.querySelectorAll('tr[data-id="thead"] th:not(:first-child)');
+
+        for (const th of thd) {
+          if (th.classList.contains("asc") || th.classList.contains("desc")) {
+            th.classList.remove("asc");
+            th.classList.remove("desc");
+            th.querySelector("button").style.display = "none";
+          }
+        }
+
+        if (self.#sortDirection === "asc" || self.#sortDirection === undefined) {
+          th.classList.add("desc");
+          th.classList.remove("asc");
+          exitBtn.style.display = "inline";
+          self.#sortDirection = "desc";
+        } else if (self.#sortDirection === "desc") {
+          th.classList.remove("desc");
+          th.classList.add("asc");
+          exitBtn.style.display = "inline";
+
+          // self.#sortDirection = "asc";
+        }
+      });
+    }
+  }
+  #createLengthMenu() {
+    let self = this;
+    const wrapper = document.createElement("div");
+    const menu = document.createElement("select");
+    const options = [10, 20, 30];
+
+    for (const option of options) {
+      menu.innerHTML += `<option value="${option}">${option}</option>`;
+    }
+    menu.addEventListener("change", (e) => {
+      self.#lengthMenuValue = e.target.value;
+      self._event("changeLengthMenu", { value: self.#lengthMenuValue });
+    });
+
+    wrapper.appendChild(menu);
+    this.wrapper.append(wrapper);
+  }
+  #createPaginate() {
+    let self = this;
+    const wraper = document.createElement("div");
+    const prevPage = this._createButton("Prev");
+    const nextPage = this._createButton("Next");
+    const currentPage = this._createButton(this.#currentPage);
+    currentPage.disabled = true;
+    self.element.addEventListener("dt.currentPage", (e) => {
+      currentPage.innerText = e.detail.value;
+      if (self.#currentPage > 1) {
+        prevPage.disabled = false;
+      }
+    });
+    prevPage.disabled = self.#currentPage == 1;
+    prevPage.addEventListener("click", (e) => {
+      if (self.#currentPage > 1) {
+        self.#currentPage--;
+      }
+      e.target.disabled = self.#currentPage == 1; ///true false
+      self._event("currentPage", { value: self.#currentPage });
+    });
+
+    nextPage.addEventListener("click", (e) => {
+      self.#currentPage++;
+      self._event("currentPage", { value: self.#currentPage });
+    });
+    wraper.appendChild(prevPage);
+    wraper.appendChild(currentPage);
+    wraper.appendChild(nextPage);
+    this.wrapper.appendChild(wraper);
+  }
+}
+
+class TableStorage {
+  constructor(table, element) {
+    this.table = table;
+    this.element = element;
+    this.load();
+  }
+
+  load() {
+    this.element.addEventListener("dt.save", (e) => {
+      console.log("EDITED", e.detail);
+    });
+
+    this.element.addEventListener("dt.deletedTBODY", (e) => {
+      console.log("TBODY deleted", e.detail);
+    });
+    this.element.addEventListener("dt.created", (e) => {
+      console.log("created", e.detail);
+    });
+    this.element.addEventListener("dt.changeLengthMenu", (e) => {
+      console.log("changeLengthMenu", e.detail);
+    });
+    this.element.addEventListener("dt.currentPage", (e) => {
+      console.log("currentPage", e.detail);
+    });
   }
 }
