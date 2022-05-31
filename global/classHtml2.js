@@ -224,9 +224,10 @@ document.addEventListener("DOMContentLoaded", (e) => {
     console.log("READY", e.detail);
     const tableStorage = new TableStorage(data.table, data.element);
   });
+
   let randomData = [];
 
-  for (let index = 0; index <= 20; index++) {
+  for (let index = 0; index <= 29; index++) {
     randomData[index] = ["Name", "Adress", "ID", "Phone", "Auto"].map((v) => v + index);
   }
 
@@ -241,8 +242,10 @@ class AdvancedTable extends HtmlTable {
   #searchFilter = [];
   #lengthMenu;
   #pagination;
+  #numberOfPages;
   #lengthMenuValue = 10;
   #currentPage = 1;
+
   constructor(element, columns, data) {
     super(element, columns);
     this.#lengthMenu = this.#createLengthMenu();
@@ -252,7 +255,7 @@ class AdvancedTable extends HtmlTable {
     this.#createSortRow();
 
     let self = this;
-    ["dt.save", "dt.deletedTBODY", "dt.created", "dt.changeLengthMenu", "dt.currentPage", "dt.search"].forEach((evt) =>
+    ["dt.save", "dt.deletedTBODY", "dt.created", "dt.changeLengthMenu", "dt.currentPage", "dt.search", "dt.sort"].forEach((evt) =>
       element.addEventListener(evt, function (e) {
         self.#renderContent();
       })
@@ -261,6 +264,7 @@ class AdvancedTable extends HtmlTable {
 
   #renderContent() {
     this.#dataRender = structuredClone(this.#data);
+
     this.#searchData(this.#searchFilter);
     this.#sortData();
     this.#paginateData();
@@ -279,15 +283,112 @@ class AdvancedTable extends HtmlTable {
   }
 
   #searchData(values) {
-    console.log(this.#dataRender);
+    //this.#dataRender.some(values);
 
-    //this.#dataRender = this.#dataRender.splice(0, 19);
+    for (const [row, columns] of Object.entries(this.#dataRender)) {
+      for (let i = 0; i < columns.length; i++) {
+        const column = columns[i];
+        const filter = values[i];
+
+        if (!column.includes(filter) && typeof filter !== "undefined") {
+          delete this.#dataRender[row];
+          break;
+        }
+      }
+    }
   }
   #sortData() {
-    //this.#dataRender = this.#dataRender.splice(0, 18);
+    // console.log(this.#dataRender);
+    // function sort(list, key) {
+    //   function compare(a, b) {
+    //     a = a[1][key];
+    //     b = b[1][key];
+    //     let type = typeof a === "string" || typeof b === "string" ? "string" : "number";
+    //     let result;
+    //     if (type === "string") result = a.localeCompare(b);
+    //     else result = a - b;
+    //     return result;
+    //   }
+    //   return list.sort(compare);
+    // }
+    //this.#dataRender = Object.entries(this.#dataRender);
+    // }
+
+    //  console.log(Object.fromEntries(Object.entries(Object.entries(element[i]))));
+    //  console.log(Object.fromEntries(Object.entries(this.#dataRender[1]).sort(([, a], [, b]) => a - b)));
+    let arajprvihclanova = [];
+    for (let i = 0; i < this.#dataRender.length; i++) {
+      const element = this.#dataRender[i];
+
+      let prviClan = [];
+      for (let i = 0; i < element.length; i++) {
+        const clan = element[i];
+        console.log(clan);
+        break;
+      }
+    } // console.log(element.sort());
+
+    //   for (let i = 0; i < element.length; i++) {
+    //     const row = element;
+    //     console.log(row.sort());
+    //   }
+    // }
+
+    // if (this.#sortDirection === "asc" && this.#sortColumn !== null) {
+    //   //reverseArr(this.#dataRender);
+    //   const sortable = Object.fromEntries(Object.entries(this.#dataRender).sort(([, a], [, b]) => a - b));
+    //   console.log(sortable);
+    // } else {
+    //   this.#dataRender;
+    //   //console.log(this.#dataRender);
+    // }
+    // let daa = this.#dataRender;
+    // //  console.log(this.#dataRender);
+    // daa.forEach((row) => {
+    //   let roww = row[1][1];
+    //   console.log(daa);
+    // });
+
+    //const sortable = Object.fromEntries(Object.entries(this.#dataRender).sort(([, a], [, b]) => a - b));
+    // this.#dataRender = Object.entries(this.#dataRender);
+    // let sort;
+    // for (let i = 0; i < this.#dataRender.length; i++) {
+    //   const row = this.#dataRender[i];
+    //   // console.log(Object.keys(Object.entries(row))[i]);
+    //   // let indexCol = Object.keys(Object.entries(row))[i];
+    //   //console.log(Object.keys(Object.entries(row))[i]);
+    //   console.log(row);
+    //   if (this.#sortDirection === "asc" && this.#sortColumn !== null) {
+    //     this.#dataRender = Object.fromEntries(Object.entries(row).sort(([a], [b]) => a - b));
+    //     console.log(this.#dataRender);
+    //   }
+    //   //console.log(Object.entries(row).sort(([, a], [, b]) => a - b));
+    // }
+    // if (this.#sortDirection === "asc" && this.#sortColumn !== null) {
+    //   this.#dataRender = Object.fromEntries(this.#dataRender.Object.entries(row).sort(([ a], [ b]) => a - b));
+    // }
+    // //console.log(sort);
+    // // if (this.#sortDirection === "desc" && this.#sortColumn !== null) {
+    // //   this.#dataRender = Object.fromEntries(this.#dataRender.Object.entries(row).sort(([, a], [, b]) => a + b));
+    // // }
+    /// this.#dataRender = Object.fromEntries(this.#dataRender);
+    // console.log(this.#sortColumn, this.#sortDirection, this.#dataRender);
   }
   #paginateData() {
     //this.#dataRender = this.#dataRender.splice(0, 5);
+    let self = this;
+
+    let menuValue = this.#lengthMenuValue;
+    menuValue = Math.floor(menuValue);
+    let lengthRows = this.#dataRender.length;
+
+    this.#numberOfPages = lengthRows / menuValue;
+    this.#numberOfPages.toFixed();
+
+    let start = (this.#currentPage - 1) * menuValue;
+    let end = start + menuValue;
+    end = parseInt(end);
+    this.#dataRender = this.#dataRender.slice(start, end);
   }
 
   #createSortRow() {
@@ -304,14 +405,20 @@ class AdvancedTable extends HtmlTable {
         exitBtn.style.display = "none";
         th.classList.remove("asc");
         th.classList.remove("desc");
+        self.#sortColumn = null;
+
+        self._event("sort", {
+          sortColumn: self.#sortColumn,
+          sortDirection: self.#sortDirection,
+        });
       });
 
       th.appendChild(exitBtn);
-      //  console.log(th);
 
       th.addEventListener("click", function (e) {
         const thd = self.thead.querySelectorAll('tr[data-id="thead"] th:not(:first-child)');
 
+        self.#sortColumn = i;
         for (const th of thd) {
           if (th.classList.contains("asc") || th.classList.contains("desc")) {
             th.classList.remove("asc");
@@ -320,18 +427,22 @@ class AdvancedTable extends HtmlTable {
           }
         }
 
-        if (self.#sortDirection === "asc" || self.#sortDirection === undefined) {
-          th.classList.add("desc");
-          th.classList.remove("asc");
+        if (self.#sortDirection === "asc") {
+          th.classList.add("asc");
+          th.classList.remove("desc");
           exitBtn.style.display = "inline";
           self.#sortDirection = "desc";
         } else if (self.#sortDirection === "desc") {
-          th.classList.remove("desc");
-          th.classList.add("asc");
+          th.classList.add("desc");
+          th.classList.remove("asc");
           exitBtn.style.display = "inline";
-
-          // self.#sortDirection = "asc";
+          self.#sortDirection = "asc";
         }
+        self._event("sort", {
+          sortColumn: self.#sortColumn,
+          sortDirection: self.#sortDirection,
+          //sortData: self.#sortData(),
+        });
       });
     }
   }
@@ -348,7 +459,7 @@ class AdvancedTable extends HtmlTable {
       self.#lengthMenuValue = e.target.value;
       self._event("changeLengthMenu", { value: self.#lengthMenuValue });
     });
-
+    console.log(self.#lengthMenuValue);
     wrapper.appendChild(menu);
     this.wrapper.append(wrapper);
   }
@@ -364,19 +475,32 @@ class AdvancedTable extends HtmlTable {
       if (self.#currentPage > 1) {
         prevPage.disabled = false;
       }
+      if (this.#numberOfPages > 1 && this.#numberOfPages === undefined) {
+        nextPage.disabled = true;
+      }
     });
     prevPage.disabled = self.#currentPage == 1;
     prevPage.addEventListener("click", (e) => {
       if (self.#currentPage > 1) {
         self.#currentPage--;
       }
+
+      if (self.#currentPage <= this.#numberOfPages) {
+        nextPage.disabled = false;
+      }
+
       e.target.disabled = self.#currentPage == 1; ///true false
       self._event("currentPage", { value: self.#currentPage });
+      console.log(this.#numberOfPages);
     });
 
     nextPage.addEventListener("click", (e) => {
       self.#currentPage++;
-      self._event("currentPage", { value: self.#currentPage });
+      self._event("currentPage", { value: self.#currentPage, value2: self.#numberOfPages });
+
+      if (self.#currentPage >= this.#numberOfPages) {
+        nextPage.disabled = true;
+      }
     });
     wraper.appendChild(prevPage);
     wraper.appendChild(currentPage);

@@ -89,6 +89,9 @@ div.container div.body table thead tr th.asc::after {
 div.container div.body table thead tr th.desc::after {
   content: "\02C5";
 }
+div.container div.body table thead tr:nth-child(1) th {
+  user-select: none;
+}
 div.container div.body {
   height: 75%;
   width: 100%;
