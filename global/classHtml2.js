@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
   let randomData = [];
 
-  for (let index = 0; index <= 29; index++) {
+  for (let index = 0; index <= 499; index++) {
     randomData[index] = ["Name", "Adress", "ID", "Phone", "Auto"].map((v) => v + index);
   }
 
@@ -279,12 +279,12 @@ class AdvancedTable extends HtmlTable {
 
   searchMethod(values) {
     this.#searchFilter = values;
+
     this._event("search", this.#searchFilter);
   }
 
   #searchData(values) {
     //this.#dataRender.some(values);
-
     for (const [row, columns] of Object.entries(this.#dataRender)) {
       for (let i = 0; i < columns.length; i++) {
         const column = columns[i];
@@ -299,41 +299,56 @@ class AdvancedTable extends HtmlTable {
   }
   #sortData() {
     // console.log(this.#dataRender);
-    // function sort(list, key) {
-    //   function compare(a, b) {
-    //     a = a[1][key];
-    //     b = b[1][key];
-    //     let type = typeof a === "string" || typeof b === "string" ? "string" : "number";
-    //     let result;
-    //     if (type === "string") result = a.localeCompare(b);
-    //     else result = a - b;
-    //     return result;
-    //   }
-    //   return list.sort(compare);
+    function comparation(list, key) {
+      function compare(a, b) {
+        a = a[1][key];
+        b = b[1][key];
+        let type = typeof a === "string" || typeof b === "string" ? "string" : "number";
+        let result;
+        if (type === "string") result = a.localeCompare(b);
+        else result = a - b;
+        return result;
+      }
+      return list.sort(compare);
+    }
+
+    //  console.log(Object.fromEntries(Object.entries(this.#dataRender)));
+
+    // let sortable = Object.keys(Object.entries(this.#dataRender[1]));
+    // let newrow = [];
+    // for (let i = 0; i < sortable.length; i++) {
+    //   const row = sortable[i];
+    //   //console.log( row);
     // }
+    // this.#dataRender.forEach((element, index, array) => {
+    //   for (let i = 0; i < element.length; i++) {
+    //     const clan = element[i];
+    //     console.log(clan);
+    //     break;
+    //   }
+    // });
+    // console.log(Object.values(Object.values(this.#dataRender[1]))[0]);
+
     //this.#dataRender = Object.entries(this.#dataRender);
     // }
 
-    //  console.log(Object.fromEntries(Object.entries(Object.entries(element[i]))));
+    //  console.log();
     //  console.log(Object.fromEntries(Object.entries(this.#dataRender[1]).sort(([, a], [, b]) => a - b)));
-    let arajprvihclanova = [];
-    for (let i = 0; i < this.#dataRender.length; i++) {
-      const element = this.#dataRender[i];
-
-      let prviClan = [];
-      for (let i = 0; i < element.length; i++) {
-        const clan = element[i];
-        console.log(clan);
-        break;
-      }
-    } // console.log(element.sort());
-
+    // let arajprvihclanova = [];
+    // for (let i = 0; i < this.#dataRender.length; i++) {
+    //   const element = this.#dataRender[i];
+    //   let prviClan = [];
+    //   for (let i = 0; i < element.length; i++) {
+    //     const clan = element[i];
+    //     console.log(clan);
+    //     break;
+    //   }
+    // } // console.log(element.sort());
     //   for (let i = 0; i < element.length; i++) {
     //     const row = element;
     //     console.log(row.sort());
     //   }
     // }
-
     // if (this.#sortDirection === "asc" && this.#sortColumn !== null) {
     //   //reverseArr(this.#dataRender);
     //   const sortable = Object.fromEntries(Object.entries(this.#dataRender).sort(([, a], [, b]) => a - b));
@@ -348,7 +363,6 @@ class AdvancedTable extends HtmlTable {
     //   let roww = row[1][1];
     //   console.log(daa);
     // });
-
     //const sortable = Object.fromEntries(Object.entries(this.#dataRender).sort(([, a], [, b]) => a - b));
     // this.#dataRender = Object.entries(this.#dataRender);
     // let sort;
@@ -377,9 +391,8 @@ class AdvancedTable extends HtmlTable {
   #paginateData() {
     //this.#dataRender = this.#dataRender.splice(0, 5);
     let self = this;
-
     let menuValue = this.#lengthMenuValue;
-    menuValue = Math.floor(menuValue);
+    menuValue = Math.round(menuValue);
     let lengthRows = this.#dataRender.length;
 
     this.#numberOfPages = lengthRows / menuValue;
@@ -388,7 +401,24 @@ class AdvancedTable extends HtmlTable {
     let start = (this.#currentPage - 1) * menuValue;
     let end = start + menuValue;
     end = parseInt(end);
-    this.#dataRender = this.#dataRender.slice(start, end);
+
+    //console.log(this.#dataRender.length);
+
+    if (this.#searchFilter.length == 0) {
+      this.#dataRender = this.#dataRender.slice(start, end);
+    }
+
+    this.#searchFilter = [];
+    //this.#dataRender = this.#dataRender.slice(start, end);
+    // if (lengthRows < this.#dataRender.length) {
+    //   this.#dataRender = this.#dataRender.slice(start, end);
+    // }
+
+    //this.#dataRender = this.#dataRender.slice(start, end);
+
+    // if (lengthRows > this.#lengthMenuValue) {
+    //   return this.#dataRender;
+    // }
   }
 
   #createSortRow() {
@@ -441,7 +471,7 @@ class AdvancedTable extends HtmlTable {
         self._event("sort", {
           sortColumn: self.#sortColumn,
           sortDirection: self.#sortDirection,
-          //sortData: self.#sortData(),
+          // sortData: self.#sortData(),
         });
       });
     }
@@ -458,8 +488,9 @@ class AdvancedTable extends HtmlTable {
     menu.addEventListener("change", (e) => {
       self.#lengthMenuValue = e.target.value;
       self._event("changeLengthMenu", { value: self.#lengthMenuValue });
+      self._event("currentPage", { value: self.#currentPage });
     });
-    console.log(self.#lengthMenuValue);
+
     wrapper.appendChild(menu);
     this.wrapper.append(wrapper);
   }
@@ -478,7 +509,17 @@ class AdvancedTable extends HtmlTable {
       if (this.#numberOfPages > 1 && this.#numberOfPages === undefined) {
         nextPage.disabled = true;
       }
+      if (self.#currentPage >= this.#numberOfPages) {
+        nextPage.disabled = true;
+      }
+      if (prevPage.disabled == true && nextPage.disabled == true) {
+        nextPage.disabled = false;
+      }
+      if (this.#numberOfPages === 1) {
+        nextPage.disabled = true;
+      }
     });
+
     prevPage.disabled = self.#currentPage == 1;
     prevPage.addEventListener("click", (e) => {
       if (self.#currentPage > 1) {
@@ -491,7 +532,6 @@ class AdvancedTable extends HtmlTable {
 
       e.target.disabled = self.#currentPage == 1; ///true false
       self._event("currentPage", { value: self.#currentPage });
-      console.log(this.#numberOfPages);
     });
 
     nextPage.addEventListener("click", (e) => {
